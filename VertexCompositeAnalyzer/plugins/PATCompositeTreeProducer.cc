@@ -177,8 +177,10 @@ private:
   bool  evtSel[MAXSEL];
   float HFsumETPlus;
   float HFsumETMinus;
-  float HFmaxETPlus;
-  float HFmaxETMinus;
+  float PFHFmaxETPlus;
+  float PFHFmaxETMinus;
+  float PFHFsumETPlus;
+  float PFHFsumETMinus;
   float ZDCPlus;
   float ZDCMinus;
   float bestvx;
@@ -345,6 +347,7 @@ private:
   bool isSkimMVA_;
   bool isCentrality_;
   bool isEventPlane_;
+  bool usePF_;
   bool useDeDxData_;
 
   //token
@@ -443,7 +446,12 @@ PATCompositeTreeProducer::PATCompositeTreeProducer(const edm::ParameterSet& iCon
 
   tok_muoncol_ = consumes<pat::MuonCollection>(edm::InputTag(iConfig.getUntrackedParameter<edm::InputTag>("MuonCollection")));
   tok_tracks_ = consumes<reco::TrackCollection>(edm::InputTag(iConfig.getUntrackedParameter<edm::InputTag>("TrackCollection")));
-  tok_pfcands_ = consumes<reco::PFCandidateCollection>(edm::InputTag(iConfig.getUntrackedParameter<edm::InputTag>("PFCandidateCollection")));
+
+  usePF_ = (iConfig.exists("usePF") ? iConfig.getParameter<bool>("usePF") : false);
+  if (usePF_)
+  {
+    tok_pfcands_ = consumes<reco::PFCandidateCollection>(edm::InputTag(iConfig.getUntrackedParameter<edm::InputTag>("PFCandidateCollection")));
+  }
 
   useDeDxData_ = (iConfig.exists("useDeDxData") ? iConfig.getParameter<bool>("useDeDxData") : false);
   if(useDeDxData_)
@@ -599,8 +607,7 @@ PATCompositeTreeProducer::fillRECO(const edm::Event& iEvent, const edm::EventSet
   centrality = -1;
   if(isCentrality_)
   {
-    edm::Handle<reco::Centrality> cent;
-    iEvent.getByToken(tok_centSrc_, cent);
+    const auto& cent = iEvent.getHandle(tok_centSrc_);
     HFsumETPlus = (cent.isValid() ? cent->EtHFtowerSumPlus() : -1.);
     HFsumETMinus = (cent.isValid() ? cent->EtHFtowerSumMinus() : -1.);
     Npixel = (cent.isValid() ? cent->multiplicityPixel() : -1);
@@ -614,26 +621,28 @@ PATCompositeTreeProducer::fillRECO(const edm::Event& iEvent, const edm::EventSet
   }
   
   NtrkHP = -1;
-  edm::Handle<reco::TrackCollection> trackColl;
-  iEvent.getByToken(tok_tracks_, trackColl);
+  const auto& trackColl = iEvent.getHandle(tok_tracks_);
   if(trackColl.isValid()) 
   {
     NtrkHP = 0;
     for (const auto& trk : *trackColl) { if (trk.quality(reco::TrackBase::highPurity)) NtrkHP++; }
   }
 
-  HFmaxETPlus = -1;
-  HFmaxETMinus = -1;
-  const auto& pfCandColl = iEvent.getHandle(tok_pfcands_);
-  if(pfCandColl.isValid())
+  PFHFmaxETPlus = -1, PFHFmaxETMinus = -1, PFHFsumETPlus = -1, PFHFsumETMinus = -1;
+  if (usePF_)
   {
-    for (const auto& pf : *pfCandColl) {
-      const auto aeta = std::abs(pf.eta());
-      if (pf.particleId() < 6 || aeta < 3.0 || aeta > 6.0) continue;
-      if (pf.eta() > 0 && HFmaxETPlus < pf.energy())
-        HFmaxETPlus = pf.energy();
-      if (pf.eta() < 0 && HFmaxETMinus < pf.energy())
-        HFmaxETMinus = pf.energy();
+    const auto& pfCandColl = iEvent.getHandle(tok_pfcands_);
+    if(pfCandColl.isValid())
+    {
+      for (const auto& pf : *pfCandColl) {
+        const auto aeta = std::abs(pf.eta());
+        if (pf.particleId() < 6 || aeta < 3.0 || aeta > 6.0) continue;
+        if (pf.eta() > 0 && PFHFmaxETPlus < pf.energy())
+          PFHFmaxETPlus = pf.energy();
+        if (pf.eta() < 0 && PFHFmaxETMinus < pf.energy())
+          PFHFmaxETMinus = pf.energy();
+        (pf.eta() > 0 ? PFHFsumETPlus : PFHFsumETMinus) += pf.energy();
+      }
     }
   }
 
@@ -1327,8 +1336,13 @@ PATCompositeTreeProducer::initTree()
     PATCompositeNtuple->Branch("bestvtxY",&bestvy,"bestvtxY/F");
     PATCompositeNtuple->Branch("bestvtxZ",&bestvz,"bestvtxZ/F");
     PATCompositeNtuple->Branch("candSize",&candSize,"candSize/i");
-    PATCompositeNtuple->Branch("HFmaxETPlus",&HFmaxETPlus,"HFmaxETPlus/F");
-    PATCompositeNtuple->Branch("HFmaxETMinus",&HFmaxETMinus,"HFmaxETMinus/F");
+    if(usePF_)
+    {
+      PATCompositeNtuple->Branch("PFHFmaxETPlus",&PFHFmaxETPlus,"PFHFmaxETPlus/F");
+      PATCompositeNtuple->Branch("PFHFmaxETMinus",&PFHFmaxETMinus,"PFHFmaxETMinus/F");
+      PATCompositeNtuple->Branch("PFHFsumETPlus",&PFHFsumETPlus,"PFHFsumETPlus/F");
+      PATCompositeNtuple->Branch("PFHFsumETMinus",&PFHFsumETMinus,"PFHFsumETMinus/F");
+    }
     if(isCentrality_) 
     {
       PATCompositeNtuple->Branch("centrality",&centrality,"centrality/S");

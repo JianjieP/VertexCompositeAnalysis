@@ -93,7 +93,7 @@ def changeToMiniAOD(process):
             triggerResults              = cms.InputTag('TriggerResults::HLT'),
             unpackFilterLabels          = cms.bool(True)
         )
-        process.load('PhysicsTools.PatAlgos.slimming.unpackedTracksAndVertices_cfi')
+        process.load('VertexCompositeAnalysis.VertexCompositeProducer.unpackedTracksAndVertices_cfi')
         process.eventFilter_HM.insert(0, process.unpackedTracksAndVertices)
         process.load('VertexCompositeAnalysis.VertexCompositeProducer.unpackedMuons_cfi')
         process.eventFilter_HM.insert(1, process.unpackedMuons)
@@ -103,8 +103,7 @@ def changeToMiniAOD(process):
         process.output_HM.outputCommands.append('keep patMuons_unpackedMuons_*_*')
         process.output_HM.outputCommands.append('drop patMuons_patMuonsWith*_*_*')
 
-
-    from HLTrigger.Configuration.CustomConfigs import MassReplaceInputTag
+    from FWCore.ParameterSet.MassReplace import massReplaceInputTag as MassReplaceInputTag
     process = MassReplaceInputTag(process,"offlinePrimaryVertices","unpackedTracksAndVertices")
     process = MassReplaceInputTag(process,"generalTracks","unpackedTracksAndVertices")
     process = MassReplaceInputTag(process,"muons","unpackedMuons")
