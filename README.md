@@ -10,7 +10,9 @@ cmsenv
 git cms-addpkg DataFormats/PatCandidates
 
 git remote add stahlleiton git@github.com:stahlleiton/cmssw.git
+
 git fetch stahlleiton --no-tags
+
 git cherry-pick 91562810cee10bac976afe057a878addc088493e
 
 git clone git@github.com:stahlleiton/VertexCompositeAnalysis.git -b ParticleFitter_15_0_X
