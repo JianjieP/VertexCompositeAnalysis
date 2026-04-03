@@ -48,7 +48,7 @@ process.diKa = generalParticles.clone(
         cms.PSet(pdgId = cms.uint32(321), charge = cms.int32(+1), selection = kaonSelection, finalSelection = kaonFinalSelection),
         cms.PSet(pdgId = cms.uint32(321), charge = cms.int32(-1), selection = kaonSelection, finalSelection = kaonFinalSelection),
     ]),
-    dEdxInputs = cms.VInputTag('dedxAllLikelihood', 'dedxPixelLikelihood', 'dedxStripLikelihood')
+    dEdxInputs = cms.VInputTag('dedxAllLikelihood', 'dedxPixelLikelihood', 'dedxStripLikelihood', 'dedxPixelHarmonic2')
 )
 process.oneDiKa = cms.EDFilter("CandViewCountFilter", src = cms.InputTag("diKa"), minNumber = cms.uint32(1))
 
