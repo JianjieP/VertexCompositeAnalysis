@@ -1,4 +1,5 @@
 <use name="FWCore/Framework"/>
+<use name="VertexCompositeAnalysis/DataFormats"/>
 <use name="DataFormats/HeavyIonEvent"/>
 <use name="RecoVertex/KinematicFit"/>
 <use name="RecoVertex/KinematicFitPrimitives"/>

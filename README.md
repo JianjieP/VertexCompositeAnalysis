@@ -2,18 +2,18 @@
 
 Example of setting up and running gamma+gamma to dimuon tree
 
-cmsrel CMSSW_15_0_10_patch1
+cmsrel CMSSW_14_1_9_patch2
 
-cd CMSSW_15_0_10_patch1/src
+cd CMSSW_14_1_9_patch2/src
 
 cmsenv
 
-git cms-addpkg DataFormats/PatCandidates ; git fetch git@github.com:stahlleiton/cmssw.git ParticleAnalyzer_CMSSW_15_1_X ; git cherry-pick ce0e4ae41f60f84dc814aa94ff39e89419da18ef
+git clone -b ParticleFitter_14_1_X https://github.com/stahlleiton/VertexCompositeAnalysis
 
-git clone git@github.com:stahlleiton/VertexCompositeAnalysis.git -b ParticleFitter_15_0_X
+cd VertexCompositeAnalysis
 
 scram b -j8
 
-cd VertexCompositeAnalysis/VertexCompositeProducer/test
+cd VertexCompositeProducer/test
 
-cmsRun PbPbSkimAndTree2025_SingleObject_MC_ParticleAnalyzer_cfg.py
+cmsRun VCTree_PbPb2023_UPCDiKa_UPCReco_cfg.py
