@@ -27,10 +27,9 @@ process.GlobalTag.globaltag = cms.string('141X_dataRun3_v6')
 ## ##############################################################################################################################
 ## Variables Production #########################################################################################################
 
-#* Set ZDC information
-process.load("VertexCompositeAnalysis.VertexCompositeProducer.ZDCRun3_cfg")
+#* Set centrality information
 process.load("RecoHI.HiCentralityAlgos.CentralityBin_cfi")
-process.cent_seq = cms.Sequence(process.centralityBin * process.zdcreco)
+process.cent_seq = cms.Sequence(process.centralityBin)
 
 # Add trigger selection
 import HLTrigger.HLTfilters.hltHighLevel_cfi

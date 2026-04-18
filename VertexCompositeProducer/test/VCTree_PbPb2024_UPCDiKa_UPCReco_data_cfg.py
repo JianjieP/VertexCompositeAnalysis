@@ -1,6 +1,6 @@
 import FWCore.ParameterSet.Config as cms
 from Configuration.StandardSequences.Eras import eras
-process = cms.Process('ANASKIM', eras.Run3_2023_UPC)
+process = cms.Process('ANASKIM', eras.Run3_2024_UPC)
 
 process.load('Configuration.StandardSequences.Services_cff')
 process.load('Configuration.StandardSequences.GeometryRecoDB_cff')
@@ -15,13 +15,13 @@ process.options.numberOfThreads=cms.untracked.uint32(1)
 
 # Define the input source
 process.source = cms.Source("PoolSource",
-    fileNames = cms.untracked.vstring("root://xrootd-cms.infn.it///store/hidata/HIRun2023A/HIForward0/MINIAOD/14Feb2025-v1/2540000/c51a506a-f43a-4b22-9ce4-a6cc4b1efd69.root"),
+    fileNames = cms.untracked.vstring("root://xrootd-cms.infn.it///store/hidata/HIRun2024B/HIForward0/MINIAOD/PromptReco-v2/000/388/468/00000/12ff488a-304d-4b4f-86ca-65df7982e796.root"),
 )
 process.maxEvents = cms.untracked.PSet(input = cms.untracked.int32(-1))
 
 # Set the global tag
 process.load('Configuration.StandardSequences.FrontierConditions_GlobalTag_cff')
-process.GlobalTag.globaltag = cms.string('141X_dataRun3_v6')
+process.GlobalTag.globaltag = cms.string('141X_dataRun3_Prompt_v4')
 
 
 ## ##############################################################################################################################
@@ -128,12 +128,12 @@ event_filter = cms.untracked.vstring(
 trig_info = cms.untracked.VPSet([
     # UPC ZB triggers
     cms.PSet(path = cms.string('HLT_HIUPC_ZeroBias_SinglePixelTrack_MaxPixelTrack_v*')),
-    cms.PSet(path = cms.string('HLT_HIUPC_ZeroBias_SinglePixelTrackLowPt_MaxPixelCluster400_v*'), filter = cms.                                     string('hltSinglePixelTrackLowPtForUPC'), minN = cms.int32(1)),
+    cms.PSet(path = cms.string('HLT_HIUPC_ZeroBias_SinglePixelTrackLowPt_MaxPixelCluster400_v*'), filter = cms.string('hltSinglePixelTrackLowPtForUPC'), minN = cms.int32(1)),
     cms.PSet(path = cms.string('HLT_HIUPC_ZeroBias_MinPixelCluster400_MaxPixelCluster10000_v*')),
     cms.PSet(path = cms.string('HLT_HIUPC_ZeroBias_MaxPixelCluster10000_v*')),
     # UPC ZDC OR triggers
     cms.PSet(path = cms.string('HLT_HIUPC_ZDC1nOR_SinglePixelTrack_MaxPixelTrack_v*')),
-    cms.PSet(path = cms.string('HLT_HIUPC_ZDC1nOR_SinglePixelTrackLowPt_MaxPixelCluster400_v*'), filter = cms.                                      string('hltSinglePixelTrackLowPtForUPC'), minN = cms.int32(1)),
+    cms.PSet(path = cms.string('HLT_HIUPC_ZDC1nOR_SinglePixelTrackLowPt_MaxPixelCluster400_v*'), filter = cms.string('hltSinglePixelTrackLowPtForUPC'), minN = cms.int32(1)),
     cms.PSet(path = cms.string('HLT_HIUPC_ZDC1nOR_MinPixelCluster400_MaxPixelCluster10000_v*')),
     cms.PSet(path = cms.string('HLT_HIUPC_ZDC1nOR_MaxPixelCluster10000_v*')),
     # UPC ZDC AND triggers
