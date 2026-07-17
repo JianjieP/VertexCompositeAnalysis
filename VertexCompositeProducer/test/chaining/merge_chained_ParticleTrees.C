@@ -13,7 +13,7 @@
 using namespace std;
 
 void merge_chained_ParticleTrees() {
-    TString outDir = "/eos/user/j/jianjie/fourpi/HIRun2025A_FourPi_0410";
+    TString outDir = "/eos/user/j/jianjie/fourpi/HIRun2025A_FourPi_0716_MINIAOD";
     TString mergedFile = outDir + "/chained_ParticleTree_merged.root";
 
     if (gSystem->mkdir(outDir, true) != 0 && gSystem->AccessPathName(outDir)) {

@@ -16,8 +16,8 @@ using namespace std;
 void sampleAna_chaining_by_i(Int_t i) {
     TChain chain("fourPiAna/ParticleTree");
 
-    TString outDir = "/eos/user/j/jianjie/fourpi/HIRun2025A_FourPi_0410";
-    TString baseDir = Form("/eos/user/j/jianjie/fourpi/HIForward%d/HIForward%d/HIForward%d_HIRun2025A_FourPi_0410", i, i, i);
+    TString outDir = "/eos/user/j/jianjie/fourpi/HIRun2025A_FourPi_0716_MINIAOD";
+    TString baseDir = Form("/eos/user/j/jianjie/fourpi/HIForward%d/HIForward%d/HIForward%d_HIRun2025A_FourPi_0716_MINIAOD", i, i, i);
     TString outputFileName = Form("%s/chained_ParticleTree_%d.root", outDir.Data(), i);
 
     if (gSystem->mkdir(outDir, true) != 0 && gSystem->AccessPathName(outDir)) {
@@ -27,7 +27,7 @@ void sampleAna_chaining_by_i(Int_t i) {
 
     cout << "[i=" << i << "] Searching in " << baseDir << endl;
 
-    TString findCmd = Form("find %s -type f -name 'fourpi_ana_*.root' 2>/dev/null || true", baseDir.Data());
+    TString findCmd = Form("find %s -type f \\( -name 'fourpi_ana_*.root' -o -name 'fourpi_data_*.root' \\) 2>/dev/null || true", baseDir.Data());
     TString fileText = gSystem->GetFromPipe(findCmd);
     TObjArray* fileList = fileText.Tokenize("\n");
 
